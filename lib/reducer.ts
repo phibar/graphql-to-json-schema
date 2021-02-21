@@ -3,6 +3,9 @@ import {
   IntrospectionInputValue,
   IntrospectionScalarType,
   IntrospectionType,
+  IntrospectionInputType,
+  IntrospectionNamedTypeRef,
+  IntrospectionOutputType
 } from 'graphql'
 import { JSONSchema6 } from 'json-schema'
 import { filter, map, MemoListIterator, reduce } from 'lodash'
@@ -50,25 +53,39 @@ export const introspectionFieldReducer: MemoListIterator<
   ReadonlyArray<IntrospectionFieldReducerItem>
 > = (acc, curr: IntrospectionFieldReducerItem): JSONSchema6Acc => {
   if (isIntrospectionField(curr)) {
-    const returnType = isNonNullIntrospectionType(curr.type)
-      ? graphqlToJSONType(curr.type.ofType)
-      : graphqlToJSONType(curr.type)
+    const type = isNonNullIntrospectionType(curr.type)
+      ? curr.type.ofType
+      : curr.type
 
-    acc[curr.name] = {
-      type: 'object',
-      properties: {
-        return: returnType,
-        arguments: {
-          type: 'object',
-          properties: reduce<IntrospectionFieldReducerItem, JSONSchema6Acc>(
-            curr.args as IntrospectionFieldReducerItem[],
-            introspectionFieldReducer,
-            {}
-          ),
-          required: getRequiredFields(curr.args),
+    if (isIntrospectionDefaultScalarType(type as IntrospectionScalarType)) {
+      const name = (type as IntrospectionNamedTypeRef<
+        IntrospectionInputType | IntrospectionOutputType
+      >).name
+
+      acc[curr.name] = {
+        type: (typesMapping as any)[name]
+      }
+    } else {
+      const returnType = graphqlToJSONType(type)
+
+      acc[curr.name] = {
+        type: 'object',
+        properties: {
+          return: returnType,
+          arguments: {
+            type: 'object',
+            properties: reduce<IntrospectionFieldReducerItem, JSONSchema6Acc>(
+              curr.args as IntrospectionFieldReducerItem[],
+              introspectionFieldReducer,
+              {}
+            ),
+            description:"1",
+            required: getRequiredFields(curr.args),
+          },
         },
-      },
-      required: [],
+        description:"2",
+        required: [],
+      }
     }
   } else if (isIntrospectionInputValue(curr)) {
     const returnType = isNonNullIntrospectionType(curr.type)

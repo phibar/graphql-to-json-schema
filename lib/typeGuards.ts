@@ -78,7 +78,9 @@ export const filterDefinitionsTypes = (
       ((isIntrospectionObjectType(type) && !!type.fields) ||
         (isIntrospectionInputObjectType(type) && !!type.inputFields) ||
         (isIntrospectionEnumType(type) && !!type.enumValues) ||
-        (isIntrospectionScalarType(type) && !!type.name)) &&
+        (isIntrospectionScalarType(type) &&
+          !!type.name &&
+          !isIntrospectionDefaultScalarType(type))) &&
       (!ignoreInternals || (ignoreInternals && !startsWith(type.name, '__')))
   )
 }

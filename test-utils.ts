@@ -178,28 +178,13 @@ export const todoSchemaAsJsonSchema: JSONSchema6 = {
       properties: {
         id: {
           description: 'A unique identifier',
-          type: 'object',
-          properties: {
-            return: { type: 'string' },
-            arguments: { type: 'object', properties: {}, required: [] },
-          },
-          required: [],
+          type: 'string',
         },
         name: {
-          type: 'object',
-          properties: {
-            return: { type: 'string' },
-            arguments: { type: 'object', properties: {}, required: [] },
-          },
-          required: [],
+          type: 'string',
         },
         completed: {
-          type: 'object',
-          properties: {
-            return: { type: 'boolean' },
-            arguments: { type: 'object', properties: {}, required: [] },
-          },
-          required: [],
+          type: 'boolean',
         },
         color: {
           type: 'object',
