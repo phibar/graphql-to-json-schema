@@ -7,7 +7,7 @@ import {
   IntrospectionNamedTypeRef,
   IntrospectionOutputType
 } from 'graphql'
-import { JSONSchema6 } from 'json-schema'
+import { JSONSchema4 } from 'json-schema'
 import { filter, map, MemoListIterator, reduce } from 'lodash'
 import {
   isIntrospectionEnumType,
@@ -22,8 +22,8 @@ import {
 } from './typeGuards'
 import { graphqlToJSONType, typesMapping } from './typesMapping'
 
-export type JSONSchema6Acc = {
-  [k: string]: JSONSchema6
+export type JSONSchema4Acc = {
+  [k: string]: JSONSchema4
 }
 
 type GetRequiredFieldsType = ReadonlyArray<
@@ -49,9 +49,9 @@ export type IntrospectionFieldReducerItem =
 // reducer for a types and inputs
 export const introspectionFieldReducer: MemoListIterator<
   IntrospectionFieldReducerItem,
-  JSONSchema6Acc,
+  JSONSchema4Acc,
   ReadonlyArray<IntrospectionFieldReducerItem>
-> = (acc, curr: IntrospectionFieldReducerItem): JSONSchema6Acc => {
+> = (acc, curr: IntrospectionFieldReducerItem): JSONSchema4Acc => {
   if (isIntrospectionField(curr)) {
     const type = isNonNullIntrospectionType(curr.type)
       ? curr.type.ofType
@@ -74,7 +74,7 @@ export const introspectionFieldReducer: MemoListIterator<
           return: returnType,
           arguments: {
             type: 'object',
-            properties: reduce<IntrospectionFieldReducerItem, JSONSchema6Acc>(
+            properties: reduce<IntrospectionFieldReducerItem, JSONSchema4Acc>(
               curr.args as IntrospectionFieldReducerItem[],
               introspectionFieldReducer,
               {}
@@ -116,15 +116,15 @@ export const introspectionTypeReducer: (
   type: 'definitions' | 'properties'
 ) => MemoListIterator<
   IntrospectionType,
-  JSONSchema6Acc,
+  JSONSchema4Acc,
   IntrospectionType[]
-> = (type) => (acc, curr: IntrospectionType): JSONSchema6Acc => {
+> = (type) => (acc, curr: IntrospectionType): JSONSchema4Acc => {
   const isQueriesOrMutations = type === 'properties'
 
   if (isIntrospectionObjectType(curr)) {
     acc[curr.name] = {
       type: 'object',
-      properties: reduce<IntrospectionFieldReducerItem, JSONSchema6Acc>(
+      properties: reduce<IntrospectionFieldReducerItem, JSONSchema4Acc>(
         curr.fields as IntrospectionFieldReducerItem[],
         introspectionFieldReducer,
         {}
@@ -137,7 +137,7 @@ export const introspectionTypeReducer: (
   } else if (isIntrospectionInputObjectType(curr)) {
     acc[curr.name] = {
       type: 'object',
-      properties: reduce<IntrospectionFieldReducerItem, JSONSchema6Acc>(
+      properties: reduce<IntrospectionFieldReducerItem, JSONSchema4Acc>(
         curr.inputFields as IntrospectionFieldReducerItem[],
         introspectionFieldReducer,
         {}

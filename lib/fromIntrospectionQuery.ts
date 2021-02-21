@@ -1,16 +1,16 @@
 import { IntrospectionQuery, IntrospectionType } from 'graphql'
-import { JSONSchema6 } from 'json-schema'
+import { JSONSchema4 } from 'json-schema'
 import { includes, partition, reduce } from 'lodash'
-import { introspectionTypeReducer, JSONSchema6Acc } from './reducer'
+import { introspectionTypeReducer, JSONSchema4Acc } from './reducer'
 import { filterDefinitionsTypes, isIntrospectionObjectType } from './typeGuards'
 
 // FIXME: finish this type
-export interface GraphQLJSONSchema6 extends JSONSchema6 {
+export interface GraphQLJSONSchema4 extends JSONSchema4 {
   properties: {
-    Query: JSONSchema6Acc
-    Mutation: JSONSchema6Acc
+    Query: JSONSchema4Acc
+    Mutation: JSONSchema4Acc
   }
-  definitions: JSONSchema6Acc
+  definitions: JSONSchema4Acc
 }
 
 export interface FromIntrospectionQueryOptions {
@@ -19,7 +19,7 @@ export interface FromIntrospectionQueryOptions {
 export const fromIntrospectionQuery = (
   introspection: IntrospectionQuery,
   opts?: FromIntrospectionQueryOptions
-): JSONSchema6 => {
+): JSONSchema4 => {
   const options = opts || { ignoreInternals: true }
   const { queryType, mutationType } = introspection.__schema
 
@@ -53,13 +53,13 @@ export const fromIntrospectionQuery = (
   )
 
   return {
-    $schema: 'http://json-schema.org/draft-06/schema#',
-    properties: reduce<IntrospectionType, JSONSchema6Acc>(
+    $schema: 'http://json-schema.org/draft-04/schema#',
+    properties: reduce<IntrospectionType, JSONSchema4Acc>(
       properties,
       introspectionTypeReducer('properties'),
       {}
     ),
-    definitions: reduce<IntrospectionType, JSONSchema6Acc>(
+    definitions: reduce<IntrospectionType, JSONSchema4Acc>(
       filterDefinitionsTypes(definitions, options),
       introspectionTypeReducer('definitions'),
       {}

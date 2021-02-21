@@ -5,7 +5,7 @@ import {
   IntrospectionQuery,
   getIntrospectionQuery,
 } from 'graphql'
-import { JSONSchema6 } from 'json-schema'
+import { JSONSchema4 } from 'json-schema'
 
 type GetTodoSchemaIntrospectionResult = {
   schema: GraphQLSchema
@@ -74,8 +74,8 @@ export const getTodoSchemaIntrospection = (): GetTodoSchemaIntrospectionResult =
   }
 }
 
-export const todoSchemaAsJsonSchema: JSONSchema6 = {
-  $schema: 'http://json-schema.org/draft-06/schema#',
+export const todoSchemaAsJsonSchema: JSONSchema4 = {
+  $schema: 'http://json-schema.org/draft-04/schema#',
   properties: {
     Query: {
       type: 'object',

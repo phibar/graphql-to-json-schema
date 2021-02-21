@@ -6,7 +6,7 @@ import {
   IntrospectionOutputTypeRef,
   IntrospectionTypeRef,
 } from 'graphql'
-import { JSONSchema6, JSONSchema6TypeName } from 'json-schema'
+import { JSONSchema4, JSONSchema4TypeName } from 'json-schema'
 import { includes } from 'lodash'
 import {
   isIntrospectionListTypeRef,
@@ -15,7 +15,7 @@ import {
 
 export type GraphQLTypeNames = 'String' | 'Int' | 'Float' | 'Boolean'
 
-export const typesMapping: { [k in GraphQLTypeNames]: JSONSchema6TypeName } = {
+export const typesMapping: { [k in GraphQLTypeNames]: JSONSchema4TypeName } = {
   Boolean: 'boolean',
   String: 'string',
   Int: 'number',
@@ -27,7 +27,7 @@ export type GraphqlToJSONTypeArg =
   | IntrospectionTypeRef
   | IntrospectionInputTypeRef
   | IntrospectionOutputTypeRef
-export const graphqlToJSONType = (k: GraphqlToJSONTypeArg): JSONSchema6 => {
+export const graphqlToJSONType = (k: GraphqlToJSONTypeArg): JSONSchema4 => {
   if (isIntrospectionListTypeRef(k)) {
     return {
       type: 'array',
