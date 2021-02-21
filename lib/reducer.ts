@@ -5,7 +5,7 @@ import {
   IntrospectionType,
   IntrospectionInputType,
   IntrospectionNamedTypeRef,
-  IntrospectionOutputType
+  IntrospectionOutputType,
 } from 'graphql'
 import { JSONSchema4 } from 'json-schema'
 import { filter, map, MemoListIterator, reduce } from 'lodash'
@@ -63,28 +63,27 @@ export const introspectionFieldReducer: MemoListIterator<
       >).name
 
       acc[curr.name] = {
-        type: (typesMapping as any)[name]
+        type: (typesMapping as any)[name],
       }
     } else {
       const returnType = graphqlToJSONType(type)
 
+      const props: JSONSchema4 = {
+        return: returnType,
+        arguments: {
+          type: 'object',
+          properties: reduce<IntrospectionFieldReducerItem, JSONSchema4Acc>(
+            curr.args as IntrospectionFieldReducerItem[],
+            introspectionFieldReducer,
+            {}
+          ),
+        },
+      }
+      if (getRequiredFields(curr.args).length)
+        props.arguments.required = getRequiredFields(curr.args)
       acc[curr.name] = {
         type: 'object',
-        properties: {
-          return: returnType,
-          arguments: {
-            type: 'object',
-            properties: reduce<IntrospectionFieldReducerItem, JSONSchema4Acc>(
-              curr.args as IntrospectionFieldReducerItem[],
-              introspectionFieldReducer,
-              {}
-            ),
-            description:"1",
-            required: getRequiredFields(curr.args),
-          },
-        },
-        description:"2",
-        required: [],
+        properties: props,
       }
     }
   } else if (isIntrospectionInputValue(curr)) {
@@ -129,11 +128,9 @@ export const introspectionTypeReducer: (
         introspectionFieldReducer,
         {}
       ),
-      // Query and Mutation are special Types, whose fields represent the individual
-      // queries and mutations. None of them ought to not be considered required, even if
-      // their return value is a NON_NULL one.
-      required: isQueriesOrMutations ? [] : getRequiredFields(curr.fields),
     }
+    if (!isQueriesOrMutations && getRequiredFields(curr.fields).length)
+      acc[curr.name].required = getRequiredFields(curr.fields)
   } else if (isIntrospectionInputObjectType(curr)) {
     acc[curr.name] = {
       type: 'object',
@@ -142,8 +139,9 @@ export const introspectionTypeReducer: (
         introspectionFieldReducer,
         {}
       ),
-      required: getRequiredFields(curr.inputFields),
     }
+    if (getRequiredFields(curr.inputFields).length)
+      acc[curr.name].required = getRequiredFields(curr.inputFields)
   } else if (isIntrospectionEnumType(curr)) {
     acc[curr.name] = {
       type: 'string',

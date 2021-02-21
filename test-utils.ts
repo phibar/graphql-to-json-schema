@@ -107,7 +107,6 @@ export const todoSchemaAsJsonSchema: JSONSchema4 = {
               $ref: '#/definitions/Todo',
             },
           },
-          required: [],
         },
         todos: {
           type: 'object',
@@ -115,19 +114,14 @@ export const todoSchemaAsJsonSchema: JSONSchema4 = {
             arguments: {
               type: 'object',
               properties: {},
-              required: [],
             },
             return: {
               type: 'array',
               items: { $ref: '#/definitions/Todo' },
             },
           },
-          required: [],
         },
       },
-      // Inappropriate for individual queries to be required, despite possibly having
-      // NON_NULL return types
-      required: [],
     },
     Mutation: {
       type: 'object',
@@ -147,7 +141,6 @@ export const todoSchemaAsJsonSchema: JSONSchema4 = {
               $ref: '#/definitions/Todo',
             },
           },
-          required: [],
         },
         create_todo: {
           type: 'object',
@@ -163,12 +156,8 @@ export const todoSchemaAsJsonSchema: JSONSchema4 = {
               $ref: '#/definitions/Todo',
             },
           },
-          required: [],
         },
       },
-      // Inappropriate for individual mutations to be required, despite possibly having
-      // NON_NULL return types
-      required: [],
     },
   },
   definitions: {
@@ -190,9 +179,8 @@ export const todoSchemaAsJsonSchema: JSONSchema4 = {
           type: 'object',
           properties: {
             return: { $ref: '#/definitions/Color' },
-            arguments: { type: 'object', properties: {}, required: [] },
+            arguments: { type: 'object', properties: {} },
           },
-          required: [],
         },
         requiredColors: {
           description:
@@ -203,9 +191,8 @@ export const todoSchemaAsJsonSchema: JSONSchema4 = {
               type: 'array',
               items: { $ref: '#/definitions/Color' },
             },
-            arguments: { type: 'object', properties: {}, required: [] },
+            arguments: { type: 'object', properties: {} },
           },
-          required: [],
         },
         optionalColors: {
           description:
@@ -216,9 +203,8 @@ export const todoSchemaAsJsonSchema: JSONSchema4 = {
               type: 'array',
               items: { $ref: '#/definitions/Color' },
             },
-            arguments: { type: 'object', properties: {}, required: [] },
+            arguments: { type: 'object', properties: {} },
           },
-          required: [],
         },
         fieldWithOptionalArgument: {
           type: 'object',
@@ -235,10 +221,8 @@ export const todoSchemaAsJsonSchema: JSONSchema4 = {
                   items: { type: 'string' },
                 },
               },
-              required: [],
             },
           },
-          required: [],
         },
         fieldWithRequiredArgument: {
           type: 'object',
@@ -258,7 +242,6 @@ export const todoSchemaAsJsonSchema: JSONSchema4 = {
               required: ['requiredFilter'],
             },
           },
-          required: [],
         },
       },
       required: ['id', 'name', 'requiredColors'],
